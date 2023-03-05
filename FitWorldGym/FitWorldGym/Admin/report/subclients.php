@@ -1,0 +1,100 @@
+<?php 
+session_start();
+include('../db_connect.php');
+
+
+
+$query=mysqli_query($conn,"SELECT * FROM registration_info WHERE status = 1 ");
+if (mysqli_num_rows($query)==0) {
+	echo "<div class='alert alert-danger' role='alert'>No Subscribed Users.</div>";
+		} else {
+			$student=0;
+			$scholar=0;
+			$adult=0;
+		     while($row = mysqli_fetch_array($query)) {
+			  $memberID = $row['member_id'];
+			  
+			  $sql=mysqli_query($conn,"SELECT * FROM user WHERE userID = ".$memberID." ");
+			       while($row1 = mysqli_fetch_array($sql)) {
+			           $type = $row1['type'];
+			       if($type == 'Student'){
+				     $student = $student + 1;  
+			       }elseif($type == 'Scholar'){
+				   $scholar = $scholar + 1;    
+			       }else{
+				     $adult = $adult + 1;  
+			       }
+			  
+	             }
+	       }
+	}
+?>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fitworldgym | Report</title>
+    <link rel="stylesheet" href="style.css" media="all" />
+  </head>
+  <body>
+    <header class="clearfix">
+      <div id="logo">
+        <img src="logo.png">
+      </div>
+      <h1>SUBSCRIBED CLIENTS REPORT</h1>
+      <div id="company" class="clearfix">
+        <div><strong>FIT WORLD GYM</strong></div>
+        <div>Downtown, Next to Foschin store<br /> Emalahleni</div>
+        <div>(+27) 13 656 2010</div>
+        <div><a href="mailto:info@fitworldgym.com">info@fitworldgym.com</a></div>
+      </div>
+      <div id="project">
+        <div><span><strong>FIT WORLD GYM REPORT</strong></span></div>
+        <div><span>ISSUED BY:</span>  <?php echo $_SESSION['fname']; ?></div>
+        <div><span>DATE: </span>  <?php echo date('Y-m-d');   ?></div>
+       
+      </div>
+    </header>
+    <main>
+      <table class="center">
+        <thead>
+          <tr>
+            <th class=""><b>PERSON TYPE</b></th>
+           
+            <th><b>TOTAL</b></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="service">Adults</td>
+            
+            <td class="total"><?php echo $adult; ?></td>
+          </tr>
+          <tr>
+            <td class="service">Students</td>
+            
+            <td class="total"><?php echo $student; ?></td>
+          </tr>
+          <tr>
+            <td class="service">Scholar</td>
+           
+            <td class="total"><?php echo $scholar; ?></td>
+          </tr>
+	   <tr>
+            <td class="desc" style="font-size:20px"><b>TOTAL NUMBER OF SUBSCRIBED USERS:</b></td>
+           
+            <td class="total"><b><?php echo $scholar+$student+$adult; ?></b></td>
+          </tr>
+          
+        
+        
+        </tbody>
+      </table>
+      <div id="notices">
+       
+          <button class="submit" onClick="window.print()">Print Report </button>
+      </div>
+    </main>
+  
+  </body>
+</html>
